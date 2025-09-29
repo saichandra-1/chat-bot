@@ -108,7 +108,7 @@ export default function ChatContainer() {
             <Bot className="w-16 h-16 mb-4 text-gray-300" />
             <h2 className="text-xl font-medium mb-2">Welcome to AI Chatbot!</h2>
             <p className="text-center max-w-md">
-              Start a conversation by typing a message below. I'm here to help answer your questions and have engaging discussions.
+              Start a conversation by typing a message below. I&apos;m here to help answer your questions and have engaging discussions.
             </p>
           </div>
         ) : (
@@ -156,7 +156,7 @@ export default function ChatContainer() {
                   <strong>How to fix:</strong>
                   <ul className="mt-1 list-disc list-inside">
                     <li>Get your API key from <a href="https://openrouter.ai/keys" target="_blank" rel="noopener noreferrer" className="underline">OpenRouter API Keys</a></li>
-                    <li>Ensure your key starts with "sk-or-" (OpenRouter format)</li>
+                    <li>Ensure your key starts with &quot;sk-or-&quot; (OpenRouter format)</li>
                     <li>Check the API key is correctly set in the code</li>
                     <li>Restart the development server after updating the key</li>
                   </ul>

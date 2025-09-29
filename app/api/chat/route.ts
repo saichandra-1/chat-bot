@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import type { Message as ChatMessage } from '@/app/types/chat';
 
 // Fail fast if key is missing and provide a safe default baseURL
 const OPENROUTER_BASE_URL = process.env.OPENROUTER_BASE_URL || 'https://openrouter.ai/api/v1';
@@ -35,7 +36,7 @@ export async function POST(request: NextRequest) {
     // Use OpenAI SDK with OpenRouter configuration
     const completion = await openai.chat.completions.create({
       model: process.env.OPENROUTER_MODEL || 'openai/gpt-oss-20b:free', // Using a reliable model
-      messages: messages.map((msg: any) => ({
+      messages: (messages as Array<Pick<ChatMessage, 'role' | 'content'>>).map((msg) => ({
         role: msg.role,
         content: msg.content,
       })),
@@ -55,26 +56,27 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       message: assistantMessage,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('OpenRouter API error:', error);
     
     // Handle specific OpenRouter errors
-    if (error.status === 402 || error.message.includes('credits')) {
+    const err = error as { status?: number; message?: string; code?: string };
+    if (err.status === 402 || (err.message && err.message.includes('credits'))) {
       return NextResponse.json(
         { error: 'OpenRouter account needs credits. Please add credits at https://openrouter.ai/settings/credits' },
         { status: 402 }
       );
-    } else if (error.status === 401 || error.code === 'invalid_api_key') {
+    } else if (err.status === 401 || err.code === 'invalid_api_key') {
       return NextResponse.json(
         { error: 'Invalid OpenRouter API key. Please check your key configuration.' },
         { status: 401 }
       );
-    } else if (error.status === 404 || error.message.includes('model')) {
+    } else if (err.status === 404 || (err.message && err.message.includes('model'))) {
       return NextResponse.json(
         { error: 'Model not available. Please try a different model or check OpenRouter model availability.' },
         { status: 404 }
       );
-    } else if (error.status === 429) {
+    } else if (err.status === 429) {
       return NextResponse.json(
         { error: 'Rate limit exceeded. Please try again later.' },
         { status: 429 }
