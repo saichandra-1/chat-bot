@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
+// Fail fast if key is missing and provide a safe default baseURL
+const OPENROUTER_BASE_URL = process.env.OPENROUTER_BASE_URL || 'https://openrouter.ai/api/v1';
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+
 const openai = new OpenAI({
-  baseURL: process.env.OPENROUTER_BASE_URL,
-  apiKey: process.env.OPENROUTER_API_KEY,
+  baseURL: OPENROUTER_BASE_URL,
+  apiKey: OPENROUTER_API_KEY,
   defaultHeaders: {
     'HTTP-Referer': 'http://localhost:3000', // Optional. Site URL for rankings on openrouter.ai.
     'X-Title': 'AI Chatbot App', // Optional. Site title for rankings on openrouter.ai.
@@ -12,6 +16,13 @@ const openai = new OpenAI({
 
 export async function POST(request: NextRequest) {
   try {
+    if (!OPENROUTER_API_KEY) {
+      return NextResponse.json(
+        { error: 'OpenRouter API key not configured. Set OPENROUTER_API_KEY in .env.local and restart the dev server.' },
+        { status: 500 }
+      );
+    }
+
     const { messages } = await request.json();
 
     if (!messages || !Array.isArray(messages)) {
