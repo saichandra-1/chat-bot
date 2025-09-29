@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import SyntaxHighlighter from 'react-syntax-highlighter/dist/esm/prism';
+import type { SyntaxHighlighterProps } from 'react-syntax-highlighter';
 import { oneDark, oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Copy, Check } from 'lucide-react';
 
@@ -25,6 +26,9 @@ export default function CodeBlock({ code, language }: CodeBlockProps) {
   };
 
   const syntaxTheme = isDarkMode ? oneDark : oneLight;
+  // react-syntax-highlighter's types can be incompatible with React 18/19 typings in some toolchains.
+  // Cast to a generic component type to satisfy TS without affecting runtime behavior.
+  const Highlighter = SyntaxHighlighter as unknown as React.ComponentType<SyntaxHighlighterProps>;
 
   return (
     <div className="relative group my-4 overflow-hidden">
@@ -51,7 +55,7 @@ export default function CodeBlock({ code, language }: CodeBlockProps) {
       
       {/* Code block */}
       <div className="relative overflow-x-auto">
-        <SyntaxHighlighter
+        <Highlighter
           language={language}
           style={syntaxTheme}
           customStyle={{
@@ -65,7 +69,7 @@ export default function CodeBlock({ code, language }: CodeBlockProps) {
           wrapLines={true}
         >
           {code}
-        </SyntaxHighlighter>
+        </Highlighter>
       </div>
     </div>
   );
