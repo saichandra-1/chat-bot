@@ -16,7 +16,7 @@ Your AI chatbot is now configured to work with **OpenRouter** using the official
 ```typescript
 const openai = new OpenAI({
   baseURL: 'https://openrouter.ai/api/v1',
-  apiKey: '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',
+  apiKey: your-api-key,
   defaultHeaders: {
     'HTTP-Referer': 'http://localhost:3000',
     'X-Title': 'AI Chatbot App',
