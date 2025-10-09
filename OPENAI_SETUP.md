@@ -36,9 +36,6 @@ yarn dev
 ## ✅ **Correct API Key Format**
 
 Your API key should look like:
-```
-sk-proj-abc123def456ghi789jkl012mno345pqr678stu901vwx234yz
-```
 
 ## ❌ **Common Mistakes**
 
