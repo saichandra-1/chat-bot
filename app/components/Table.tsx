@@ -13,16 +13,16 @@ export default function Table({ headers, rows }: TableProps) {
   }
 
   return (
-    <div className="my-4 overflow-x-auto">
-      <div className="inline-block min-w-full shadow-sm rounded-lg border border-gray-300 bg-white">
-        <table className="min-w-full divide-y divide-gray-200">
+    <div className="my-4 overflow-x-auto rounded-xl shadow-lg border border-[var(--border-color)]">
+      <div className="inline-block min-w-full bg-[var(--bg-secondary)] rounded-xl overflow-hidden">
+        <table className="min-w-full divide-y divide-[var(--border-color)]">
           {/* Table Header */}
-          <thead className="bg-gray-50">
+          <thead className="bg-[var(--bg-tertiary)]">
             <tr>
               {headers.map((header, index) => (
                 <th
                   key={index}
-                  className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider border-r border-gray-200 last:border-r-0"
+                  className="px-5 py-4 text-left text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider border-r border-[var(--border-color)] last:border-r-0"
                 >
                   <TextFormatter text={header} />
                 </th>
@@ -31,13 +31,16 @@ export default function Table({ headers, rows }: TableProps) {
           </thead>
           
           {/* Table Body */}
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-[var(--bg-secondary)] divide-y divide-[var(--border-color)]">
             {rows.map((row, rowIndex) => (
-              <tr key={rowIndex} className="hover:bg-gray-50 transition-colors">
+              <tr 
+                key={rowIndex} 
+                className="hover:bg-[var(--bg-tertiary)] transition-colors duration-150"
+              >
                 {row.map((cell, cellIndex) => (
                   <td
                     key={cellIndex}
-                    className="px-4 py-3 text-sm text-gray-900 border-r border-gray-200 last:border-r-0"
+                    className="px-5 py-4 text-sm text-[var(--text-primary)] border-r border-[var(--border-color)] last:border-r-0"
                   >
                     <div className="max-w-xs break-words">
                       <TextFormatter text={cell} />

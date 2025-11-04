@@ -4,7 +4,8 @@ import { useState, useRef, useEffect } from 'react';
 import { Message } from '@/app/types/chat';
 import MessageBubble from './MessageBubble';
 import ChatInput from './ChatInput';
-import { Bot, AlertCircle } from 'lucide-react';
+import ThemeToggle from './ThemeToggle';
+import { Bot, AlertCircle, Sparkles } from 'lucide-react';
 
 export default function ChatContainer() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -81,50 +82,66 @@ export default function ChatContainer() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50">
+    <div className="flex flex-col h-screen bg-[var(--bg-primary)] transition-colors duration-200">
       {/* Header */}
-      <div className="bg-white border-b px-6 py-4">
-        <div className="flex items-center space-x-3">
-          <button
-            type="button"
-            onClick={() => window.location.reload()}
-            className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400"
-            aria-label="Reload"
-            title="Reload"
-          >
-            <Bot className="w-6 h-6 text-white" />
-          </button>
-          <div>
-            <h1 className="text-xl font-semibold text-gray-900">AI Chatbot</h1>
-            <p className="text-sm text-gray-500">Powered by OpenAI</p>
+      <div className="bg-[var(--bg-secondary)] border-b border-[var(--border-color)] px-6 py-4 shadow-sm backdrop-blur-sm">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="w-12 h-12 gradient-bg rounded-2xl flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+              aria-label="Reload"
+              title="Reload"
+            >
+              <Bot className="w-6 h-6 text-white" />
+            </button>
+            <div>
+              <h1 className="text-2xl font-bold gradient-text">AI Chatbot</h1>
+              <p className="text-sm text-[var(--text-secondary)] flex items-center gap-1">
+                <Sparkles className="w-3 h-3" />
+                Powered by OpenAI
+              </p>
+            </div>
           </div>
+          <ThemeToggle />
         </div>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-6">
+      <div className="flex-1 overflow-y-auto p-6 bg-gradient-to-b from-[var(--bg-primary)] to-[var(--bg-secondary)]">
         {messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-gray-500">
-            <Bot className="w-16 h-16 mb-4 text-gray-300" />
-            <h2 className="text-xl font-medium mb-2">Welcome to AI Chatbot!</h2>
-            <p className="text-center max-w-md">
+          <div className="flex flex-col items-center justify-center h-full text-[var(--text-secondary)] animate-fadeIn">
+            <div className="relative mb-6">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full blur-2xl opacity-20 animate-pulse"></div>
+              <Bot className="w-20 h-20 text-[var(--text-tertiary)] relative z-10" />
+            </div>
+            <h2 className="text-2xl font-bold mb-3 text-[var(--text-primary)]">Welcome to AI Chatbot!</h2>
+            <p className="text-center max-w-md text-[var(--text-secondary)] leading-relaxed">
               Start a conversation by typing a message below. I&apos;m here to help answer your questions and have engaging discussions.
             </p>
+            <div className="mt-8 flex gap-2">
+              <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
+              <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+              <div className="w-2 h-2 bg-pink-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+            </div>
           </div>
         ) : (
-          <div className="space-y-4">
-            {messages.map((message) => (
-              <MessageBubble key={message.id} message={message} />
+          <div className="space-y-6 max-w-4xl mx-auto">
+            {messages.map((message, index) => (
+              <div key={message.id} className="animate-slideIn" style={{ animationDelay: `${index * 0.05}s` }}>
+                <MessageBubble message={message} />
+              </div>
             ))}
             {isLoading && (
-              <div className="flex justify-start">
-                <div className="flex items-center space-x-2 bg-gray-100 rounded-lg px-4 py-2">
-                  <div className="flex space-x-1">
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+              <div className="flex justify-start animate-fadeIn">
+                <div className="flex items-center space-x-3 bg-[var(--bg-secondary)] rounded-2xl px-5 py-3 shadow-md border border-[var(--border-color)]">
+                  <div className="flex space-x-1.5">
+                    <div className="w-2.5 h-2.5 bg-blue-500 rounded-full animate-bounce"></div>
+                    <div className="w-2.5 h-2.5 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                    <div className="w-2.5 h-2.5 bg-pink-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                   </div>
-                  <span className="text-sm text-gray-500">AI is typing...</span>
+                  <span className="text-sm text-[var(--text-secondary)] font-medium">AI is thinking...</span>
                 </div>
               </div>
             )}
@@ -135,27 +152,27 @@ export default function ChatContainer() {
 
       {/* Error Message */}
       {error && (
-        <div className="mx-6 mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <div className="flex items-start space-x-2">
-            <AlertCircle className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
+        <div className="mx-6 mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl shadow-lg animate-fadeIn">
+          <div className="flex items-start space-x-3">
+            <AlertCircle className="w-5 h-5 text-red-500 dark:text-red-400 mt-0.5 flex-shrink-0" />
             <div className="flex-1">
-              <h3 className="text-red-800 font-medium text-sm mb-1">Error</h3>
-              <p className="text-red-700 text-sm mb-2">{error}</p>
+              <h3 className="text-red-800 dark:text-red-200 font-semibold text-sm mb-1">Error</h3>
+              <p className="text-red-700 dark:text-red-300 text-sm mb-2">{error}</p>
               {error.includes('quota') && (
-                <div className="text-xs text-red-600 bg-red-100 p-2 rounded">
+                <div className="text-xs text-red-600 dark:text-red-300 bg-red-100 dark:bg-red-900/30 p-3 rounded-lg">
                   <strong>How to fix:</strong>
-                  <ul className="mt-1 list-disc list-inside">
-                    <li>Visit <a href="https://platform.openai.com/account/billing" target="_blank" rel="noopener noreferrer" className="underline">OpenAI Billing</a> to add credits</li>
+                  <ul className="mt-1 list-disc list-inside space-y-1">
+                    <li>Visit <a href="https://platform.openai.com/account/billing" target="_blank" rel="noopener noreferrer" className="underline hover:text-red-800 dark:hover:text-red-200">OpenAI Billing</a> to add credits</li>
                     <li>Check your usage limits in your OpenAI dashboard</li>
                     <li>Consider upgrading your OpenAI plan if needed</li>
                   </ul>
                 </div>
               )}
               {error.includes('API key') && (
-                <div className="text-xs text-red-600 bg-red-100 p-2 rounded">
+                <div className="text-xs text-red-600 dark:text-red-300 bg-red-100 dark:bg-red-900/30 p-3 rounded-lg">
                   <strong>How to fix:</strong>
-                  <ul className="mt-1 list-disc list-inside">
-                    <li>Get your API key from <a href="https://openrouter.ai/keys" target="_blank" rel="noopener noreferrer" className="underline">OpenRouter API Keys</a></li>
+                  <ul className="mt-1 list-disc list-inside space-y-1">
+                    <li>Get your API key from <a href="https://openrouter.ai/keys" target="_blank" rel="noopener noreferrer" className="underline hover:text-red-800 dark:hover:text-red-200">OpenRouter API Keys</a></li>
                     <li>Ensure your key starts with &quot;sk-or-&quot; (OpenRouter format)</li>
                     <li>Check the API key is correctly set in the code</li>
                     <li>Restart the development server after updating the key</li>
@@ -163,10 +180,10 @@ export default function ChatContainer() {
                 </div>
               )}
               {error.includes('credits') && (
-                <div className="text-xs text-red-600 bg-red-100 p-2 rounded">
+                <div className="text-xs text-red-600 dark:text-red-300 bg-red-100 dark:bg-red-900/30 p-3 rounded-lg">
                   <strong>How to fix:</strong>
-                  <ul className="mt-1 list-disc list-inside">
-                    <li>Add credits at <a href="https://openrouter.ai/settings/credits" target="_blank" rel="noopener noreferrer" className="underline">OpenRouter Credits</a></li>
+                  <ul className="mt-1 list-disc list-inside space-y-1">
+                    <li>Add credits at <a href="https://openrouter.ai/settings/credits" target="_blank" rel="noopener noreferrer" className="underline hover:text-red-800 dark:hover:text-red-200">OpenRouter Credits</a></li>
                     <li>Minimum $5-10 should be enough for testing</li>
                     <li>Check your account balance and usage</li>
                     <li>Consider upgrading your OpenRouter plan</li>

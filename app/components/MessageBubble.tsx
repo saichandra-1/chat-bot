@@ -17,44 +17,52 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
   
   return (
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`}>
-      <div className={`flex items-start space-x-2 max-w-[80%] ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`}>
-        <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-          isUser ? 'bg-blue-500' : 'bg-gray-500'
+      <div className={`flex items-start gap-3 max-w-[85%] ${isUser ? 'flex-row-reverse' : ''}`}>
+        <div className={`flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center shadow-lg transform transition-transform hover:scale-110 ${
+          isUser 
+            ? 'gradient-bg' 
+            : 'bg-[var(--bg-tertiary)] border border-[var(--border-color)]'
         }`}>
           {isUser ? (
-            <User className="w-4 h-4 text-white" />
+            <User className="w-5 h-5 text-white" />
           ) : (
-            <Bot className="w-4 h-4 text-white" />
+            <Bot className="w-5 h-5 text-[var(--text-primary)]" />
           )}
         </div>
-        <div className={`rounded-lg px-4 py-2 ${
-          isUser 
-            ? 'bg-blue-500 text-white' 
-            : 'bg-gray-100 text-gray-900'
+        <div className={`flex flex-col gap-1 ${
+          isUser ? 'items-end' : 'items-start'
         }`}>
-          <div className="text-sm">
-            {parsedContent.map((part, index) => (
-              <div key={index}>
-                {part.type === 'text' ? (
-                  <div>
-                    <TextFormatter text={part.content} />
-                  </div>
-                ) : part.type === 'code' ? (
-                  <div className="my-2">
-                    <CodeBlock code={part.content} language={part.language || 'text'} />
-                  </div>
-                ) : part.type === 'table' ? (
-                  <div className="my-2">
-                    <Table headers={part.headers || []} rows={part.rows || []} />
-                  </div>
-                ) : null}
-              </div>
-            ))}
-          </div>
-          <p className={`text-xs mt-1 ${
-            isUser ? 'text-blue-100' : 'text-gray-500'
+          <div className={`rounded-2xl px-5 py-3 shadow-md hover:shadow-lg transition-all duration-200 ${
+            isUser 
+              ? 'gradient-bg text-white rounded-tr-sm' 
+              : 'bg-[var(--bg-secondary)] text-[var(--text-primary)] border border-[var(--border-color)] rounded-tl-sm'
           }`}>
-            {message.timestamp.toLocaleTimeString()}
+            <div className="text-sm leading-relaxed">
+              {parsedContent.map((part, index) => (
+                <div key={index}>
+                  {part.type === 'text' ? (
+                    <div className={isUser ? 'text-white' : 'text-[var(--text-primary)]'}>
+                      <TextFormatter text={part.content} />
+                    </div>
+                  ) : part.type === 'code' ? (
+                    <div className="my-2">
+                      <CodeBlock code={part.content} language={part.language || 'text'} />
+                    </div>
+                  ) : part.type === 'table' ? (
+                    <div className="my-2">
+                      <Table headers={part.headers || []} rows={part.rows || []} />
+                    </div>
+                  ) : null}
+                </div>
+              ))}
+            </div>
+          </div>
+          <p className={`text-xs px-2 ${
+            isUser 
+              ? 'text-[var(--text-tertiary)]' 
+              : 'text-[var(--text-tertiary)]'
+          }`}>
+            {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
           </p>
         </div>
       </div>
