@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
 
     // Use OpenAI SDK with OpenRouter configuration
     const completion = await openai.chat.completions.create({
-      model: process.env.OPENROUTER_MODEL || 'openai/gpt-oss-20b:free', // Using a reliable model
+      model: process.env.OPENROUTER_MODEL || 'openai/gpt-oss-120b:free', // Using a reliable model
       messages: (messages as Array<Pick<ChatMessage, 'role' | 'content'>>).map((msg) => ({
         role: msg.role,
         content: msg.content,
