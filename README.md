@@ -1,4 +1,4 @@
-# AI Chatbot App
+# AI Chatbot App 
 
 A modern, fully functional AI chatbot application built with Next.js 15, TypeScript, and OpenAI integration.
 
@@ -151,7 +151,7 @@ The app can be deployed to any platform that supports Next.js:
 
 ## License
 
-This project is open source and available under the [MIT License](LICENSE).
+This project is open source and available under the [MIT License](LICENSE)!
 
 ## Support
 
