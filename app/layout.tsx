@@ -1,21 +1,10 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import { ThemeProvider } from "./contexts/ThemeContext";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import type { Metadata } from 'next';
+import './globals.css';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 export const metadata: Metadata = {
-  title: "AI Chatbot App",
-  description: "A modern AI-powered chatbot built with Next.js and OpenAI",
+  title: 'AI Chatbot App',
+  description: 'A modern AI-powered chatbot built with Next.js and OpenAI',
 };
 
 export default function RootLayout({
@@ -40,9 +29,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className="antialiased">
         <ThemeProvider>
           {children}
         </ThemeProvider>

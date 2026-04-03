@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Send, Loader2 } from 'lucide-react';
+import { Loader2, SendHorizontal } from 'lucide-react';
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
@@ -11,73 +11,73 @@ interface ChatInputProps {
 export default function ChatInput({ onSendMessage, isLoading }: ChatInputProps) {
   const [message, setMessage] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-  const MAX_HEIGHT_PX = 200; // ~10-12 lines depending on line-height
+  const canSend = message.trim().length > 0 && !isLoading;
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (message.trim() && !isLoading) {
-      onSendMessage(message.trim());
-      setMessage('');
+  const send = () => {
+    const nextMessage = message.trim();
+    if (!nextMessage || isLoading) {
+      return;
+    }
+
+    onSendMessage(nextMessage);
+    setMessage('');
+  };
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    send();
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      send();
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter') {
-      if (e.shiftKey) {
-        // allow newline insertion
-        return;
-      }
-      e.preventDefault();
-      if (message.trim() && !isLoading) {
-        onSendMessage(message.trim());
-        setMessage('');
-      }
-    }
-  };
-
-  // Auto-resize the textarea up to a max height
   useEffect(() => {
-    const el = textareaRef.current;
-    if (!el) return;
-    el.style.height = 'auto';
-    const nextHeight = Math.min(el.scrollHeight, MAX_HEIGHT_PX);
-    el.style.height = `${nextHeight}px`;
+    const element = textareaRef.current;
+    if (!element) {
+      return;
+    }
+
+    element.style.height = 'auto';
+    element.style.height = `${Math.min(element.scrollHeight, 180)}px`;
   }, [message]);
 
   return (
-    <div className="border-t border-[var(--border-color)] bg-[var(--bg-secondary)] backdrop-blur-sm sticky bottom-0">
-      <div className="flex items-end justify-center px-4 sm:px-6 md:px-8 py-4">
-        <div className="w-full max-w-3xl">
-          <form onSubmit={handleSubmit} className="flex items-end gap-3">
-            <div className="flex-1 relative">
-              <textarea
-                ref={textareaRef}
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Ask anything"
-                rows={1}
-                className="w-full resize-none px-5 py-3.5 pr-14 border border-[var(--border-color)] rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 overflow-y-auto bg-[var(--bg-primary)] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] shadow-sm hover:shadow-md transition-all duration-200"
-                style={{ maxHeight: `${MAX_HEIGHT_PX}px` }}
-                disabled={isLoading}
-              />
-              
-            </div>
-            <button
-              type="submit"
-              disabled={!message.trim() || isLoading}
-              className="w-12 h-12 gradient-bg text-white rounded-2xl hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-all duration-200 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 shadow-lg disabled:transform-none flex-shrink-0 self-end"
-              aria-label="Send message"
-            >
-              {isLoading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <Send className="w-5 h-5" />
-              )}
-            </button>
-          </form>
+    <div className="mx-auto w-full max-w-5xl">
+      <form onSubmit={handleSubmit} className="space-y-2">
+        <div className="flex items-end gap-3">
+          <textarea
+            ref={textareaRef}
+            value={message}
+            onChange={(event) => setMessage(event.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Message your assistant..."
+            rows={1}
+            maxLength={4000}
+            disabled={isLoading}
+            className="max-h-[180px] min-h-[52px] flex-1 resize-none rounded-2xl border border-[var(--border-soft)] bg-[var(--bg-surface)] px-4 py-3 text-[15px] leading-relaxed text-[var(--text-primary)] outline-none placeholder:text-[var(--text-muted)] focus:border-[var(--brand-primary)] focus:ring-2 focus:ring-teal-500/30"
+          />
+
+          <button
+            type="submit"
+            disabled={!canSend}
+            className="inline-flex h-12 w-12 items-center justify-center rounded-2xl text-white hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-55"
+            style={{ backgroundImage: 'var(--user-gradient)' }}
+            aria-label="Send message"
+          >
+            {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <SendHorizontal className="h-5 w-5" />}
+          </button>
         </div>
-      </div>
+
+        <div className="mt-2 flex items-center justify-between px-1 text-xs text-[var(--text-muted)]">
+          <span className="hidden sm:inline">Enter to send, Shift+Enter for a new line</span>
+          <span className="sm:hidden">Enter to send</span>
+          <span>{message.length}/4000</span>
+        </div>
+      </form>
     </div>
   );
 }
